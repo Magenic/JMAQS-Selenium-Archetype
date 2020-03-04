@@ -11,7 +11,7 @@
         <compiler.plugin.version>3.6.1</compiler.plugin.version>
         <webdriverextensions.version>3.2.0</webdriverextensions.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jmaq.version>0.0.1-SNAPSHOT</jmaq.version>
+        <jmaq.version>2.0.0</jmaq.version>
         <selenium.version>3.141.59</selenium.version>
     </properties>
     
