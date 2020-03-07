@@ -54,7 +54,7 @@
         <BrowserSize>MAXIMIZE</BrowserSize>
         <BrowserSize>DEFAULT</BrowserSize>-->
         <BrowserSize>1024x768</BrowserSize>
-
+        <WebDriverHintPath>./src/test/resources/drivers</WebDriverHintPath>
         <SoftAssertScreenshot>Yes</SoftAssertScreenshot>
         <SavePagesourceOnFail>Yes</SavePagesourceOnFail>
         <ImageFormat>Jpeg</ImageFormat>
