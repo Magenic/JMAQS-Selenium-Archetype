@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmaq.version>2.0.0</jmaq.version>
         <selenium.version>3.141.59</selenium.version>
-        <surefire.plugin.version>3.0.0-M4</surefire.plugin.version>
+        <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
     </properties>
     
     <build>   
