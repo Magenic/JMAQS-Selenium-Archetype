@@ -158,7 +158,7 @@ jobs:
           target_url: https://oss.sonatype.org/#nexus-search;quick~JMAQS
           environment: SnapShot - ${{matrix.repo}}
       - name: Deploy SnapShot Packages to '${{matrix.repo}}' Repository
-        run: mvn -Drevision="${{env.VERSION}}-SNAPSHOT" -Ddeploy=${{matrix.repo}} install -B -e -f pom.xml Archetype-Modified/pom.xml
+        run: mvn -Drevision="${{env.VERSION}}-SNAPSHOT" -Ddeploy=${{matrix.repo}} install -B -e -f Archetype-Modified/pom.xml
       - name: Update deployment status (success)
         if: success()
         uses: altinukshini/deployment-status@releases/v1
