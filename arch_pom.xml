@@ -8,7 +8,8 @@
     <packaging>maven-archetype</packaging>
 
     <name>JMAQS Selenium Archetype</name>
-
+    <description>A starting template for utilizing the JMAQS Automation Framework for Selenium UI Testing
+    </description>
     <url>https://github.com/Magenic/JMAQS-Selenium-Archetype</url>
     <inceptionYear>2017</inceptionYear>
     <organization>
