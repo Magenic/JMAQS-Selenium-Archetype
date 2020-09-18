@@ -45,7 +45,7 @@ jobs:
           path: ~/.m2
           key: m2
       - name: Build with Maven
-        run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file test_pom.xml
+        run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report --file test_pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   generate:
