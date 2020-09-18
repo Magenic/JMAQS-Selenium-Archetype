@@ -9,6 +9,41 @@
 
     <name>JMAQS Selenium Archetype</name>
 
+    <url>https://github.com/Magenic/JMAQS-Selenium-Archetype</url>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>Magenic Technologies</name>
+        <url>https://www.magenic.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <organization>Magenic Technologies</organization>
+            <organizationUrl>https://www.magenic.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/Magenic/JMAQS-Selenium-Archetype/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>GitHub Actions</system>
+        <url>https://github.com/Magenic/JMAQS-Selenium-Archetype/actions</url>
+    </ciManagement>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://github.com/Magenic/JMAQS-Selenium-Archetype/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/Magenic/JMAQS-Selenium-Archetype.git</connection>
+        <developerConnection>scm:git:git@github.com:Magenic/JMAQS-Selenium-Archetype.git</developerConnection>
+        <url>https://github.com/Magenic/JMAQS-Selenium-Archetype</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <revision>2.1.0-SNAPSHOT</revision>
     </properties>
