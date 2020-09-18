@@ -5,10 +5,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.magenic.jmaqs.archetypes</groupId>
-    <artifactId>jmaqs-selenium-project</artifactId>
-    <version>${revision}</version>
 
+    <groupId>io.instacode.jmaqs.archetypes</groupId>
+    <artifactId>jmaqs-selenium</artifactId>
+    <version>${revision}</version>
+    <name>JMAQS Selenium Archetype</name>
     <properties>
         <revision>2.1.0-SNAPSHOT</revision>
         <selenium.version>3.141.59</selenium.version>
@@ -16,13 +17,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.plugin.version>3.8.1</compiler.plugin.version>
         <jmaqs.version>2.1.0</jmaqs.version>
+        <sonar.projectKey>InstaCode_JMAQS-Selenium-Archetype</sonar.projectKey>
+        <sonar.organization>instacode</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>bb3062c0bd984a6f712c378b2ab53d02cacfe741</sonar.login>
+        <sonar.coverage.jacoco.xmlReportPaths>./target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
         <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.magenic.jmaqs.selenium</groupId>
             <artifactId>jmaqs-selenium</artifactId>
-            <version>${jmaqs.version}</version>
+            <version>2.1.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -31,6 +38,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin.version}</version>
                 <configuration>
+                    <release>11</release>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -58,7 +66,7 @@
                                 <driver>
                                     <name>chromedriver</name>
                                     <customFileName>chromedriver</customFileName>
-                                    <version>83.0.4103.39</version>
+                                    <version>85.0.4183.83</version>
                                 </driver>
                             </drivers>
                         </configuration>
