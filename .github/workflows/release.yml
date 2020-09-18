@@ -160,9 +160,9 @@ jobs:
         with:
           token: "${{ github.token }}"
           target_url: https://oss.sonatype.org/#nexus-search;quick~JMAQS
-          environment: SnapShot - ${{matrix.repo}}
+          environment: Release - ${{matrix.repo}}
       - name: Deploy Release v${{env.VERSION}} Packages to '${{matrix.repo}}' Repository
-        run: mvn -Drevision="${{env.VERSION}}" -Ddeploy=${{matrix.repo}} -Prelease-${{matrix.repo}} install -B -e -f Archetype-Modified/pom.xml
+        run: mvn -Drevision="${{env.VERSION}}" -Ddeploy=${{matrix.repo}} -Prelease-${{matrix.repo}} deploy -B -e -f Archetype-Modified/pom.xml
       - name: Update deployment status (success)
         if: success()
         uses: altinukshini/deployment-status@releases/v1
