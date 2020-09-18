@@ -1,21 +1,20 @@
 package com.company.automation.pagemodels;
 
+import com.magenic.jmaqs.selenium.BaseSeleniumPageModel;
 import com.magenic.jmaqs.selenium.SeleniumConfig;
 import com.magenic.jmaqs.selenium.SeleniumTestObject;
-import com.magenic.jmaqs.selenium.UIWait;
 import com.magenic.jmaqs.selenium.factories.UIWaitFactory;
 import org.openqa.selenium.By;
 
 /**
  * The type Home page model.
  */
-public class HomePageModel extends BasePageModel {
+public class HomePageModel extends BaseSeleniumPageModel {
 
   /**
    * The URL for the page.
    */
-  private static final String PAGE_URL = SeleniumConfig.getWebSiteBase()
-      + "Static/Training3/HomePage.html";
+  private static final String PAGE_URL = SeleniumConfig.getWebSiteBase() + "Static/Training3/HomePage.html";
 
   /**
    * Welcome Message Selector.
@@ -25,8 +24,7 @@ public class HomePageModel extends BasePageModel {
   /**
    * Instantiates a new Home page model.
    *
-   * @param testObject
-   *          the test object
+   * @param testObject the test object
    */
   public HomePageModel(SeleniumTestObject testObject) {
     super(testObject);
@@ -34,11 +32,11 @@ public class HomePageModel extends BasePageModel {
 
   /**
    * Check if home page has been loaded
-   * 
+   *
    * @return True if the page was loaded
    */
   public boolean isPageLoaded() {
-    return getWaitDriver().waitForVisibleElement(WELCOME_MESSAGE).isDisplayed();
+    return UIWaitFactory.getWaitDriver(getWebDriver()).waitForVisibleElement(WELCOME_MESSAGE).isDisplayed();
   }
 
 }

@@ -1,0 +1,199 @@
+name: Release Build
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  release_information:
+    name: Get Release Information
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{steps.bash_v.outputs.version}}
+      release_upload_url: ${{steps.get_release.outputs.upload_url}}
+      release_html_url: ${{steps.get_release.outputs.html_url}}
+      tag_name: ${{steps.get_release.outputs.tag_name}}
+      release_id: ${{steps.get_release.outputs.id}}
+    steps:
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Formatting Version Tag
+        id: bash_v
+        run: |
+          version=${release_info_v//v}
+          echo "::set-output name=version::${version}"
+        env:
+          release_info_v: ${{steps.get_release.outputs.tag_name}}
+  test:
+    runs-on: ubuntu-latest
+    name: Run Tests
+    needs: release_information
+    env:
+      VERSION: ${{needs.release_information.outputs.version}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Cache
+        uses: actions/cache@v1.1.2
+        with:
+          path: ~/.m2
+          key: m2
+      - name: Build with Maven
+        run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file test_pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  generate:
+    runs-on: ubuntu-latest
+    name: Generate Archetype
+    needs: test
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Cache
+        uses: actions/cache@v1.1.2
+        with:
+          path: ~/.m2
+          key: m2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Arch-Pom
+          path: arch_pom.xml
+      - name: Clean Up file script
+        run: ./cleanup.sh
+      - name: Remove file scripts
+        run: rm cleanup.sh
+      - name: Build with Maven
+        run: mvn -B archetype:create-from-project
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Archetype
+          path: target/generated-sources/archetype
+  modify:
+    runs-on: ubuntu-latest
+    name: Modify Archetype
+    needs: [ generate ]
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Maven Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{runner.os}}-m2
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v2
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Download Archetype
+        uses: actions/download-artifact@v1.0.0
+        with:
+          name: Archetype
+      - name: Download Arch-Pom
+        uses: actions/download-artifact@v1.0.0
+        with:
+          name: Arch-Pom
+      - name: File adjustment operations
+        run: |
+          rm ${{github.workspace}}/Archetype/pom.xml
+          mv ${{github.workspace}}/Arch-Pom/arch_pom.xml ${{github.workspace}}/Archetype/pom.xml
+          find . -type d -name "drivers" -exec rm -rf {} +
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Archetype-Modified
+          path: ${{github.workspace}}/Archetype
+  deploy_release:
+    runs-on: ubuntu-latest
+    name: Deploy Archetype Snapshot
+    needs: [ modify, release_information ]
+    env:
+      VERSION: ${{needs.release_information.outputs.version}}
+      TAG_NAME: ${{needs.release_information.outputs.tag_name}}
+      RELEASE_ID: ${{needs.release_information.outputs.relase_id}}
+    strategy:
+      matrix:
+        repo: [github, ossrh]
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Maven Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{runner.os}}-m2
+      - name: Create settings file
+        uses: InstaCode/maven-settings-xml-action@v9
+        with:
+          servers: '[{"id": "ossrh", "username": "jason-edstrom", "password": "${{secrets.OSSRH_PACKAGES}}"},{"id": "github", "username": "jason-edstrom", "password": "${{secrets.PACKAGES}}"}]'
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v2
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Download Archetype
+        uses: actions/download-artifact@v1.0.0
+        with:
+          name: Archetype-Modified
+      - uses: altinukshini/deployment-action@releases/v1
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: "${{ github.token }}"
+          target_url: https://oss.sonatype.org/#nexus-search;quick~JMAQS
+          environment: SnapShot - ${{matrix.repo}}
+      - name: Deploy Release v${{env.VERSION}} Packages to '${{matrix.repo}}' Repository
+        run: mvn -Drevision="${{env.VERSION}}" -Ddeploy=${{matrix.repo}} -Prelease-${{matrix.repo}} install -B -e -f Archetype-Modified/pom.xml
+      - name: Update deployment status (success)
+        if: success()
+        uses: altinukshini/deployment-status@releases/v1
+        with:
+          token: "${{ github.token }}"
+          target_url: https://oss.sonatype.org/#nexus-search;quick~JMAQS
+          state: "success"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: altinukshini/deployment-status@releases/v1
+        with:
+          token: "${{ github.token }}"
+          target_url: https://oss.sonatype.org/#nexus-search;quick~JMAQS
+          state: "failure"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+      - name: Upload Build Artifacts
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: packages
+          path: ./**/*.jar
+      - name: Rollback Release
+        if: failure()
+        uses: author/action-rollback@stable
+        with:
+          # Using a known release ID
+          id: ${{ env.RELEASE_ID }}
+          # Using a tag name
+          tag: ${{ env.TAG_NAME }}
+          # Always delete the tag, even if a release is not associated with it.
+          always_delete_tag: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
