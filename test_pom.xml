@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <groupId>io.instacode.jmaqs.archetypes</groupId>
+    <groupId>com.magenic.jmaqs.archetypes</groupId>
     <artifactId>jmaqs-selenium</artifactId>
     <version>${revision}</version>
     <name>JMAQS Selenium Archetype</name>
