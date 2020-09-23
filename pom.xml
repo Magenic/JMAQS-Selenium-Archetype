@@ -32,6 +32,7 @@
                 <version>${compiler.plugin.version}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <release>8</release>
                 </configuration>
             </plugin>
             <plugin>
