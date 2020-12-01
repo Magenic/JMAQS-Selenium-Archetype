@@ -15,7 +15,7 @@
         <webdriverextensions.version>3.2.0</webdriverextensions.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.plugin.version>3.8.1</compiler.plugin.version>
-        <jmaqs.version>2.1.0</jmaqs.version>
+        <jmaqs.version>2.2.1</jmaqs.version>
         <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
     </properties>
     <dependencies>
