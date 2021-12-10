@@ -38,5 +38,4 @@ public class HomePageModel extends BaseSeleniumPageModel {
   public boolean isPageLoaded() {
     return UIWaitFactory.getWaitDriver(getWebDriver()).waitForVisibleElement(WELCOME_MESSAGE).isDisplayed();
   }
-
 }
